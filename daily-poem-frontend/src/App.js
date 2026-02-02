@@ -4,9 +4,16 @@ function App() {
   const [poemData, setPoemData] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/today") // points to your local backend
+    // Use deployed URL if not localhost
+    const API_BASE =
+      window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "https://daily-poetry-app-production.up.railway.app";
+
+    fetch(`${API_BASE}/today`)
       .then(res => res.json())
-      .then(data => setPoemData(data));
+      .then(data => setPoemData(data))
+      .catch(err => console.error("Error fetching poem:", err));
   }, []);
 
   if (!poemData) return <div>Loading...</div>;
