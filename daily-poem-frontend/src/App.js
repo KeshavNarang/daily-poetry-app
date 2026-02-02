@@ -4,13 +4,7 @@ function App() {
   const [poemData, setPoemData] = useState(null);
 
   useEffect(() => {
-    // Use deployed URL if not localhost
-    const API_BASE =
-      window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
-        ? "http://127.0.0.1:8000"
-        : "https://daily-poetry-app-production.up.railway.app";
-
-    fetch(`${API_BASE}/today`)
+    fetch("/")   // fetch the root, works locally and deployed
       .then(res => res.json())
       .then(data => setPoemData(data))
       .catch(err => console.error("Error fetching poem:", err));

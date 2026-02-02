@@ -62,8 +62,8 @@ def get_poem_for_today():
     }
 
 
-@app.get("/today")
-def today():
+@app.get("/")
+def root():
     return {
         "date": datetime.date.today().isoformat(),
         "poem": get_poem_for_today()
