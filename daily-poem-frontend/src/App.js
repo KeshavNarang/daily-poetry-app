@@ -4,7 +4,14 @@ function App() {
   const [poemData, setPoemData] = useState(null);
 
   useEffect(() => {
-    fetch("/")   // fetch the root, works locally and deployed
+  // If running on localhost:3000, fetch local backend
+  // Otherwise, fetch from the same host the frontend is served on (Railway)
+    const API_BASE =
+      window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
+        ? "http://127.0.0.1:8000"
+        : "";  // empty string means "same host"
+
+    fetch(`${API_BASE}/`)
       .then(res => res.json())
       .then(data => setPoemData(data))
       .catch(err => console.error("Error fetching poem:", err));
