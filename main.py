@@ -1,17 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 import requests
 import datetime
-import os
 
 app = FastAPI()
 
-# Enable CORS
+# Step 2: Enable CORS so React dev server can fetch
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],        # allow all origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,18 +24,25 @@ AUTHORS = [
 
 POETRYDB_BASE = "https://poetrydb.org/author/"
 
+
 def get_poem_for_today():
     today = datetime.date.today()
     days_since_epoch = (today - datetime.date(1970, 1, 1)).days
+
+    # deterministic author selection
     author_index = days_since_epoch % len(AUTHORS)
     author = AUTHORS[author_index]
 
+    # fetch poems from PoetryDB
     url = f"{POETRYDB_BASE}{author.replace(' ', '%20')}"
     resp = requests.get(url)
     poems = resp.json()
+
+    # deterministic poem selection
     poem_index = days_since_epoch % len(poems)
     poem = poems[poem_index]
 
+    # convert lines → stanzas (empty lines separate stanzas)
     stanzas = []
     current_stanza = []
     for line in poem.get("lines", []):
@@ -57,21 +61,9 @@ def get_poem_for_today():
         "stanzas": stanzas
     }
 
-# ---- Serve React frontend ----
-frontend_path = "frontend_build"
 
-# Mount static files (JS/CSS/assets)
-app.mount("/static", StaticFiles(directory=os.path.join(frontend_path, "static")), name="static")
-
-# Serve index.html at root
 @app.get("/")
-def serve_react():
-    index_file = os.path.join(frontend_path, "index.html")
-    return FileResponse(index_file)
-
-# ---- API endpoint for poem JSON ----
-@app.get("/api/poem")
-def poem_api():
+def root():
     return {
         "date": datetime.date.today().isoformat(),
         "poem": get_poem_for_today()
