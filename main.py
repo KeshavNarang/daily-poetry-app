@@ -8,12 +8,7 @@ import datetime
 
 app = FastAPI()
 
-FRONTEND_DIR = "frontend_build"
-
-if os.path.isdir(FRONTEND_DIR):
-    app.mount("/static", StaticFiles(directory=os.path.join(FRONTEND_DIR, "static")), name="static")
-
-# Step 2: Enable CORS so React dev server can fetch
+# Step 1: Enable CORS so React dev server can fetch
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],        # allow all origins
@@ -22,6 +17,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Step 2: Serve the React frontend build
+FRONTEND_DIR = "frontend_build"
+
+if os.path.isdir(FRONTEND_DIR):
+    # Serve static files (JS/CSS)
+    app.mount("/static", StaticFiles(directory=os.path.join(FRONTEND_DIR, "static")), name="static")
+    # Serve all other frontend files (index.html, manifest.json, favicon.ico, logos)
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+
+# Step 3: Backend logic
 AUTHORS = [
     "Emily Dickinson",
     "Walt Whitman",
@@ -32,7 +37,6 @@ AUTHORS = [
 
 POETRYDB_BASE = "https://poetrydb.org/author/"
 
-
 def get_poem_for_today():
     today = datetime.date.today()
     days_since_epoch = (today - datetime.date(1970, 1, 1)).days
@@ -42,9 +46,14 @@ def get_poem_for_today():
     author = AUTHORS[author_index]
 
     # fetch poems from PoetryDB
-    url = f"{POETRYDB_BASE}{author.replace(' ', '%20')}"
-    resp = requests.get(url)
-    poems = resp.json()
+    try:
+        url = f"{POETRYDB_BASE}{author.replace(' ', '%20')}"
+        resp = requests.get(url, timeout=5)
+        resp.raise_for_status()
+        poems = resp.json()
+    except Exception:
+        # fallback in case PoetryDB fails
+        poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
 
     # deterministic poem selection
     poem_index = days_since_epoch % len(poems)
@@ -69,17 +78,7 @@ def get_poem_for_today():
         "stanzas": stanzas
     }
 
-
-@app.get("/")
-def root():
-    index_path = os.path.join(FRONTEND_DIR, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    return {
-        "date": datetime.date.today().isoformat(),
-        "poem": get_poem_for_today()
-    }
-
+# Step 4: API route
 @app.get("/api/poem")
 def get_poem():
     return {
