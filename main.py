@@ -31,23 +31,30 @@ def get_poem_for_today():
     today = datetime.date.today()
     days_since_epoch = (today - datetime.date(1970, 1, 1)).days
 
-    # deterministic author selection
     author_index = days_since_epoch % len(AUTHORS)
     author = AUTHORS[author_index]
 
-    # fetch poems from PoetryDB with fallback
+    url = f"{POETRYDB_BASE}{author.replace(' ', '%20')}"
+
     try:
-        url = f"{POETRYDB_BASE}{author.replace(' ', '%20')}"
         resp = requests.get(url, timeout=5)
+        # Print raw text from PoetryDB
+        print("PoetryDB raw response:", resp.text)
         resp.raise_for_status()
         poems = resp.json()
-    except Exception:
+    except Exception as e:
+        print("PoetryDB fetch failed:", e)
+        poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
+
+    # Validate response is a list
+    if not isinstance(poems, list) or len(poems) == 0:
+        print("PoetryDB returned unexpected JSON:", poems)
         poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
 
     poem_index = days_since_epoch % len(poems)
     poem = poems[poem_index]
 
-    # convert lines → stanzas (empty lines separate stanzas)
+    # Convert lines → stanzas
     stanzas = []
     current_stanza = []
     for line in poem.get("lines", []):
