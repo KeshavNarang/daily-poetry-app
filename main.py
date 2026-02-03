@@ -20,15 +20,13 @@ app.add_middleware(
 AUTHORS = [
     "Emily Dickinson",
     "Walt Whitman",
-    "Robert Frost",
-    "John Keats",
-    "Maya Angelou"
+    "John Keats"
 ]
 
 POETRYDB_BASE = "https://poetrydb.org/author/"
 
 def get_poem_for_today():
-    today = datetime.date.today()
+    today = datetime.datetime.utcnow().date()
     days_since_epoch = (today - datetime.date(1970, 1, 1)).days
 
     author_index = days_since_epoch % len(AUTHORS)
