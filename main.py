@@ -1,9 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 import requests
 import datetime
 
 app = FastAPI()
+
+FRONTEND_DIR = "frontend_build"
+
+if os.path.isdir(FRONTEND_DIR):
+    app.mount("/static", StaticFiles(directory=os.path.join(FRONTEND_DIR, "static")), name="static")
 
 # Step 2: Enable CORS so React dev server can fetch
 app.add_middleware(
@@ -64,6 +72,16 @@ def get_poem_for_today():
 
 @app.get("/")
 def root():
+    index_path = os.path.join(FRONTEND_DIR, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {
+        "date": datetime.date.today().isoformat(),
+        "poem": get_poem_for_today()
+    }
+
+@app.get("/api/poem")
+def get_poem():
     return {
         "date": datetime.date.today().isoformat(),
         "poem": get_poem_for_today()

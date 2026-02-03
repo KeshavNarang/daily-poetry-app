@@ -11,7 +11,7 @@ function App() {
         ? "http://127.0.0.1:8000"
         : "";  // empty string means "same host"
 
-    fetch(`${API_BASE}/`)
+    fetch(`${API_BASE}/api/poem`)
       .then(res => res.json())
       .then(data => setPoemData(data))
       .catch(err => console.error("Error fetching poem:", err));
