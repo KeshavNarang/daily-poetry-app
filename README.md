@@ -17,10 +17,10 @@ Built with **React** (frontend) and **FastAPI** (backend), hosted on **Railway**
 ## Project Structure
 
 poems/
-│ main.py # FastAPI backend
-│ requirements.txt # Python dependencies
-│ frontend_build/ # Built React frontend
-│ daily-poem-frontend/ # React source code
+- main.py # FastAPI backend
+- requirements.txt # Python dependencies
+- frontend_build/ # Built React frontend
+- daily-poem-frontend/ # React source code
 
 
 ---
@@ -43,26 +43,26 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload
+```
 
-Frontend
+### Frontend
 
-cd daily-poem-frontend
+```cd daily-poem-frontend
 npm install
 npm start
 
 Build for Production
 npm run build
 # Copy build into frontend_build/ for FastAPI to serve
+```
 
-npm run build
-# Copy build into frontend_build/ for FastAPI to serve
-Deployment
+### Deployment
 
 Push the repo to Railway.
 
 FastAPI serves both the API (/api/poem) and the static frontend (/).
 
-Notes
+### Notes
 Uses UTC date for deterministic daily selection.
 Only authors available in PoetryDB are included.
 Simple inline CSS for readability.
