@@ -59,11 +59,10 @@ npm run build
 ### Deployment
 
 Push the repo to Railway.
-
 FastAPI serves both the API (/api/poem) and the static frontend (/).
 
 ### Notes
-Uses UTC date for deterministic daily selection.
-Only authors available in PoetryDB are included.
-Simple inline CSS for readability.
-Works locally and on Railway without extra configuration.
+- Uses UTC date for deterministic daily selection.
+- Only authors available in PoetryDB are included.
+- Simple inline CSS for readability.
+- Works locally and on Railway without extra configuration.
