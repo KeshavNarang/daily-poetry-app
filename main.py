@@ -56,30 +56,33 @@ def get_poem_for_today():
     today = datetime.datetime.utcnow().date()
     days_since_epoch = (today - datetime.date(1970, 1, 1)).days
 
-    author_index = days_since_epoch % len(AUTHORS)
-    author = AUTHORS[author_index]
-
-    url = f"{POETRYDB_BASE}{quote(author)}"
-
-    try:
-        resp = requests.get(url, timeout=5)
-        # Print raw text from PoetryDB
-        print("PoetryDB raw response:", resp.text)
-        resp.raise_for_status()
-        poems = resp.json()
-    except Exception as e:
-        print("PoetryDB fetch failed:", e)
-        poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
-
-    # Validate response is a list
-    if not isinstance(poems, list) or len(poems) == 0:
-        print("PoetryDB returned unexpected JSON:", poems)
-        poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
-
-    poems = [p for p in poems if p["linecount"] < 20]
-    # print([(p["title"], p["linecount"], type(p["linecount"])) for p in poems])
-    poem_index = days_since_epoch % len(poems)
-    poem = poems[poem_index]
+    for i in range(len(AUTHORS)):
+        author_index = (days_since_epoch + i) % len(AUTHORS)
+        author = AUTHORS[author_index]
+    
+        url = f"{POETRYDB_BASE}{quote(author)}"
+    
+        try:
+            resp = requests.get(url, timeout=5)
+            # Print raw text from PoetryDB
+            print("PoetryDB raw response:", resp.text)
+            resp.raise_for_status()
+            poems = resp.json()
+        except Exception as e:
+            print("PoetryDB fetch failed:", e)
+            poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
+    
+        # Validate response is a list
+        if not isinstance(poems, list) or len(poems) == 0:
+            print("PoetryDB returned unexpected JSON:", poems)
+            poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
+    
+        poems = [p for p in poems if p["linecount"] < 20]
+    
+        if (len(poems) > 0):
+            print([(p["title"], p["linecount"], type(p["linecount"])) for p in poems])
+            poem_index = days_since_epoch % len(poems)
+            poem = poems[poem_index]
 
     # Convert lines → stanzas
     stanzas = []
