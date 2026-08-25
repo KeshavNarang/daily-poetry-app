@@ -83,6 +83,7 @@ def get_poem_for_today():
             print([(p["title"], p["linecount"], type(p["linecount"])) for p in poems])
             poem_index = days_since_epoch % len(poems)
             poem = poems[poem_index]
+            break
 
     # Convert lines → stanzas
     stanzas = []
