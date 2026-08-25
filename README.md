@@ -9,7 +9,6 @@ Built with **React** (frontend) and **FastAPI** (backend), hosted on **Railway**
 
 - Daily poem with title, author, and stanzas.
 - Deterministic selection based on UTC date.
-- Handles missing authors gracefully.
 - React frontend served as static files through FastAPI.
 
 ---
