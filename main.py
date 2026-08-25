@@ -26,7 +26,6 @@ AUTHORS = [
     "Eliza Cook",
     "Emily Bronte",
     "Emily Dickinson",
-    "George Gordon, Lord Byron",
     "Henry David Thoreau",
     "Henry Wadsworth Longfellow",
     "Jane Austen",
