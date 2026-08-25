@@ -78,7 +78,7 @@ def get_poem_for_today():
             poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
             continue
     
-        poems = [p for p in poems if p["linecount"] < 20]
+        poems = [p for p in poems if int(p["linecount"]) < 20]
     
         if (len(poems) > 0):
             print([(p["title"], p["linecount"], type(p["linecount"])) for p in poems])
