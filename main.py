@@ -76,7 +76,7 @@ def get_poem_for_today():
         print("PoetryDB returned unexpected JSON:", poems)
         poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
 
-    poems = [p for p in poems if p["linecount"] < 20]
+    # poems = [p for p in poems if p["linecount"] < 20]
     poem_index = days_since_epoch % len(poems)
     poem = poems[poem_index]
 
