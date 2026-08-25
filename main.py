@@ -76,6 +76,7 @@ def get_poem_for_today():
         if not isinstance(poems, list) or len(poems) == 0:
             print("PoetryDB returned unexpected JSON:", poems)
             poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
+            continue
     
         poems = [p for p in poems if p["linecount"] < 20]
     
