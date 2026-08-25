@@ -77,7 +77,7 @@ def get_poem_for_today():
         poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
 
     poems = [p for p in poems if p["linecount"] < 20]
-    print([(p["title"], p["linecount"], type(p["linecount"])) for p in poems])
+    # print([(p["title"], p["linecount"], type(p["linecount"])) for p in poems])
     poem_index = days_since_epoch % len(poems)
     poem = poems[poem_index]
 
