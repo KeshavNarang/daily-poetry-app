@@ -18,9 +18,36 @@ app.add_middleware(
 
 # Step 2: Backend logic
 AUTHORS = [
+    "Ann Taylor",
+    "Anne Bronte",
+    "Charlotte Bronte",
+    "Edgar Allan Poe",
+    "Edward Fitzgerald",
+    "Eliza Cook",
+    "Emily Bronte",
     "Emily Dickinson",
+    "George Gordon, Lord Byron",
+    "Henry David Thoreau",
+    "Henry Wadsworth Longfellow",
+    "Jane Austen",
+    "John Keats",
+    "John Milton",
+    "Lewis Carroll",
+    "Lord Alfred Tennyson",
+    "Louisa May Alcott",
+    "Mark Twain",
+    "Oscar Wilde",
+    "Percy Bysshe Shelley",
+    "Phillis Wheatley",
+    "Ralph Waldo Emerson",
+    "Robert Browning",
+    "Robert Louis Stevenson",
+    "Sir Walter Raleigh",
+    "Stephen Crane",
+    "Thomas Campbell",
     "Walt Whitman",
-    "John Keats"
+    "William Shakespeare",
+    "William Wordsworth"
 ]
 
 POETRYDB_BASE = "https://poetrydb.org/author/"
@@ -49,6 +76,7 @@ def get_poem_for_today():
         print("PoetryDB returned unexpected JSON:", poems)
         poems = [{"title": "Unavailable", "author": author, "lines": ["Poem not available today."]}]
 
+    poems = [p for p in poems if p["linecount"] < 20]
     poem_index = days_since_epoch % len(poems)
     poem = poems[poem_index]
 
