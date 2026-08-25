@@ -81,7 +81,6 @@ def get_poem_for_today():
         poems = [p for p in poems if int(p["linecount"]) < 20]
     
         if (len(poems) > 0):
-            print([(p["title"], p["linecount"], type(p["linecount"])) for p in poems])
             poem_index = days_since_epoch % len(poems)
             poem = poems[poem_index]
             break
