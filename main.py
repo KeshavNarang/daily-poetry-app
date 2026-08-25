@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from urllib.parse import quote
 import requests
 import datetime
 import os
@@ -58,7 +59,7 @@ def get_poem_for_today():
     author_index = days_since_epoch % len(AUTHORS)
     author = AUTHORS[author_index]
 
-    url = f"{POETRYDB_BASE}{author.replace(' ', '%20')}"
+    url = f"{POETRYDB_BASE}{quote(author)}"
 
     try:
         resp = requests.get(url, timeout=5)
